@@ -4,18 +4,23 @@ import subprocess
 import re
 import shutil
 import webbrowser
-import zipfile
-import urllib.request
+
+# Проверка наличия ffmpeg.exe в папке программы
+# import zipfile
+# import urllib.request
 
 
-# Определить путь к папке программы
-program_folder = os.path.dirname(os.path.abspath(__file__))
+# # Определить путь к папке программы
+# program_folder = os.path.dirname(os.path.abspath(__file__))
 
 
-# Пути Для разработки
-# Проверить наличие FFmpeg и yt-dlp в папке программы . Переменная в которой хранится путь до нужных файлов
-ffmpeg_path = os.path.join(program_folder, 'ffmpeg.exe')
+# # Пути Для разработки
+# # Проверить наличие FFmpeg и yt-dlp в папке программы . Переменная в которой хранится путь до нужных файлов
+ffmpeg_path = os.path.join(program_folder, 'ffmpeg')
 yt_dlp_path = os.path.join(program_folder, 'yt-dlp')
+
+
+
 
 
 # Проверка наличия ffmpeg.exe в папке программы
@@ -288,6 +293,11 @@ def main_menu():
         print("4) Скачать m3u8")
         print("5) Поддерживаемые источники (?)")
         print("6) Выход")
+
+
+        print(ffmpeg_path)
+        print(yt_dlp_path)
+
 
         choice = input("Введите ваш выбор (1/2/3/4/5/6): ")
 
