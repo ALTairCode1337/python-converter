@@ -295,8 +295,6 @@ def main_menu():
         print("6) Выход")
 
 
-        print(ffmpeg_path)
-        print(yt_dlp_path)
 
 
         choice = input("Введите ваш выбор (1/2/3/4/5/6): ")
