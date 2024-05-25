@@ -10,8 +10,8 @@ import webbrowser
 # import urllib.request
 
 
-# # Определить путь к папке программы
-# program_folder = os.path.dirname(os.path.abspath(__file__))
+# Определить путь к папке программы
+program_folder = os.path.dirname(os.path.abspath(__file__))
 
 
 # # Пути Для разработки
