@@ -4,10 +4,8 @@ import subprocess
 import re
 import shutil
 import webbrowser
+from tqdm import tqdm
 
-# Проверка наличия ffmpeg.exe в папке программы
-# import zipfile
-# import urllib.request
 
 
 # Определить путь к папке программы
@@ -16,51 +14,10 @@ program_folder = os.path.dirname(os.path.abspath(__file__))
 
 # # Пути Для разработки
 # # Проверить наличие FFmpeg и yt-dlp в папке программы . Переменная в которой хранится путь до нужных файлов
-ffmpeg_path = os.path.join(program_folder, 'ffmpeg')
-yt_dlp_path = os.path.join(program_folder, 'yt-dlp')
+ffmpeg_path = os.path.join(program_folder, 'ffmpeg.exe')
+yt_dlp_path = os.path.join(program_folder, 'yt-dlp.exe')
 
 
-
-
-
-# Проверка наличия ffmpeg.exe в папке программы
-# if not os.path.exists(ffmpeg_path):
-#     print("Не хватает библиотек, сейчас докачаю")
-#     # Скачивание архива
-#     urllib.request.urlretrieve("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip", "ffmpeg-release-essentials.zip")
-#     print("Скачал архив")
-
-#     # Распаковка архива
-#     with zipfile.ZipFile("ffmpeg-release-essentials.zip", 'r') as zip_ref:
-#         # Извлечение папки версии программы
-#         version_folder = None
-#         for file in zip_ref.namelist():
-#             if file.startswith('ffmpeg-') and file.endswith('/'):
-#                 version_folder = file.rstrip('/')
-#                 break
-        
-#         if version_folder:
-#             zip_ref.extractall()
-#             bin_folder = os.path.join(program_folder, version_folder, 'bin')
-#             ffmpeg_exe_path = os.path.join(bin_folder, 'ffmpeg.exe')
-            
-#             if os.path.exists(ffmpeg_exe_path):
-#                 shutil.copy2(ffmpeg_exe_path, program_folder)
-#                 print("Скопировал ffmpeg.exe в папку программы")
-                
-#                 # Удаление папки версии программы
-#                 shutil.rmtree(os.path.join(program_folder, version_folder))
-#                 print("Удалил папку версии программы")
-#             else:
-#                 print("Файл ffmpeg.exe не найден в папке bin")
-#         else:
-#             print("Не удалось найти папку версии программы в архиве")
-
-#     # Удаление архива
-#     os.remove("ffmpeg-release-essentials.zip")
-#     print("Удалил архив")
-
-#     print("Библиотеки докачаны. Предлагаю продолжить.")
 
 # Цвет текста
 class Color:
@@ -96,8 +53,13 @@ def download_mp3(url):
     try:
         create_saves_directory()
         print("В процессе, подождите...")
+
         download_command = [yt_dlp_path, '-o', 'saves/%(title)s.%(ext)s', '--extract-audio', '--audio-format', 'mp3', url]
-        subprocess.run(download_command, check=True)
+        with tqdm(total=100, desc="Скачивание MP3", unit="%", leave=False) as pbar:
+            process = subprocess.Popen(download_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+            for line in iter(process.stdout.readline, ''):
+                pbar.update(100 / len(line))
+            process.wait()
 
         downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
 
@@ -117,8 +79,13 @@ def download_video(url):
     try:
         create_saves_directory()
         print("В процессе, подождите...")
+
         download_command = [yt_dlp_path, '-o', 'saves/%(title)s.%(ext)s', url]
-        subprocess.run(download_command, check=True)
+        with tqdm(total=100, desc="Скачивание MP4", unit="%", leave=False) as pbar:
+            process = subprocess.Popen(download_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+            for line in iter(process.stdout.readline, ''):
+                pbar.update(100 / len(line))
+            process.wait()
 
         downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
 
@@ -284,7 +251,7 @@ def compress_videos():
 def main_menu():
     while True:
         os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
-        print("Версия программы 0.3")
+        print("Версия программы 0.4")
         print("Автор: https://github.com/spbkit1337")
         print("\n")
         print("1) Загрузить в формате MP3")
@@ -300,11 +267,11 @@ def main_menu():
         choice = input("Введите ваш выбор (1/2/3/4/5/6): ")
 
         if choice == '1':
-            url = input("Введите ссылку на видео YouTube: ")
+            url = input("Введите ссылку на видео чтобы скачать аудио: ")
             add_link(url)
             download_mp3(url)
         elif choice == '2':
-            url = input("Введите ссылку на видео YouTube: ")
+            url = input("Введите ссылку на видео: ")
             add_link(url)
             download_video(url)
         elif choice == '3':
