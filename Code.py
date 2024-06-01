@@ -5,6 +5,9 @@ import re
 import shutil
 import webbrowser
 from tqdm import tqdm
+import tabulate
+import glob
+
 
 
 
@@ -141,7 +144,6 @@ def compress_videos():
     output_format = input("Шаг: 3(4) Выберите желаемый формат выходного файла (.mp4 или .webm): ")
     crf = input("Шаг: 4(4) Насколько сильно нужно сжать файлы: от 18 до 28. Где 18 - качество идентично оригиналу, а 28 - хуже качество, но размер меньше. В случае формата webm советую ставить около 20: ")
 
-
     total_size_before = 0
     total_size_after = 0
     compressed_video_count = 0
@@ -209,7 +211,7 @@ def compress_videos():
 
             output_file = os.path.join(output_folder_path, file_name)
             if not os.path.exists(output_file) or parent_folder_path != output_folder_path:
-                print(f"{Color.YELLOW}В процесе: {file_name}{Color.END}")
+                print(f"{Color.YELLOW}{folder_counter}) В процессе: {file_name}{Color.END}")
 
                 if file_name.endswith(('.mp4', '.webm', '.ts', '.m4v', '.mkv')):
                     compressed_file_name = f"{os.path.splitext(file_name)[0]}_compressed.{output_format}"
@@ -237,6 +239,8 @@ def compress_videos():
                         shutil.copy(file_path, output_folder_path)
                         print(f"{Color.GREEN}Файл был скопирован: {file_name}{Color.END}")
 
+            folder_counter += 1
+
     print("\n")
     print(f"{Color.GREEN}Все сжато! Статистика:{Color.END}")
     print(f"Количество видеофайлов: {compressed_video_count}")
@@ -244,6 +248,55 @@ def compress_videos():
     print(f"Размер всех видеофайлов после сжатия: {total_size_after / (1024 * 1024 * 1024):.2f} GB")
     print("\n")
     input("\nНажмите Enter для продолжения...")
+
+
+
+from tqdm import tqdm
+
+# Сжатие картинок в webp
+def convert_to_webp(parent_dir, quality):
+    total_files = 0
+    compressed_files = 0
+    total_size = 0
+    compressed_size = 0
+
+    for root, dirs, files in os.walk(parent_dir):
+        print(f"Обрабатываю папку: {root}")
+        for file in tqdm(files, desc="Обработано файлов", unit="файл", total=len(files)):
+            if file.endswith(('.jpeg', '.jpg', '.avif', '.png', '.webp', '.tiff')):
+                file_path = os.path.join(root, file)
+                compressed_file = os.path.splitext(file_path)[0] + "_compressed.webp"
+                command = ['ffmpeg', '-i', file_path, '-q:v', str(quality), compressed_file]
+                subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+
+                # Calculate sizes
+                total_files += 1
+                compressed_files += 1
+                total_size += os.path.getsize(file_path)
+                compressed_size += os.path.getsize(compressed_file)
+
+    # Calculate sizes in MB
+    total_size_mb = total_size / (1024 ** 2)
+    compressed_size_mb = compressed_size / (1024 ** 2)
+
+    print(f"Общее количество файлов: {total_files}")
+    print(f"Количество сконвертированных и сжатых файлов: {compressed_files}")
+    print(f"Общий размер исходных файлов: {total_size_mb:.2f} MB")
+    print(f"Общий размер сжатых файлов: {compressed_size_mb:.2f} MB")
+
+    delete_original = input(f"{Color.YELLOW}Хотите ли вы удалить исходные изображения? (y/n): {Color.END}")
+    if delete_original.lower() == 'y':
+        for root, dirs, files in os.walk(parent_dir):
+            for file in files:
+                if file.endswith(('.jpeg', '.jpg', '.avif', '.png', '.webp', '.tiff')) and not file.endswith('_compressed.webp'):
+                    file_path = os.path.join(root, file)
+                    os.remove(file_path)
+
+    print("\n")
+    input("\nНажмите Enter для продолжения...")
+
+
+
 
 
 
@@ -258,13 +311,11 @@ def main_menu():
         print("2) Загрузить видео в формате MP4")
         print("3) Сконвертировать и сжать видео")
         print("4) Скачать m3u8")
-        print("5) Поддерживаемые источники (?)")
-        print("6) Выход")
+        print("5) Сконвертировать и сжать изображения")
+        print("6) Поддерживаемые источники (?)")
+        print("7) Выход")
 
-
-
-
-        choice = input("Введите ваш выбор (1/2/3/4/5/6): ")
+        choice = input("Введите ваш выбор (1/2/3/4/5/6/7): ")
 
         if choice == '1':
             url = input("Введите ссылку на видео чтобы скачать аудио: ")
@@ -279,11 +330,20 @@ def main_menu():
         elif choice == '4':
             download_m3u8()
         elif choice == '5':
-            webbrowser.open("https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md")
+            print("\n")
+            print("Все файлы: '.jpeg', '.jpg', '.avif', '.png', '.webp', '.tiff' будут сконвертированы и сжаты в webp и сохранены рядом с исходными файлами (будет добавлен суффикс _compressed)")
+            print("\nДругие файлы кроме фоток затронуты не будут.")
+            parent_dir = input("Шаг: 1(2)Введи путь до общей папки: ")
+            quality = int(input("Шаг: 2(2)Степень сжатия от 1 до 100 (рекомендую ставить 60-75): "))
+            convert_to_webp(parent_dir, quality)            
         elif choice == '6':
+            webbrowser.open("https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md")
+        elif choice == '7':
             exit()
         else:
             print("Неверный выбор, попробуйте снова.")
+
+
 
 if __name__ == "__main__":
     main_menu()
