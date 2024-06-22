@@ -83,12 +83,9 @@ def download_video(url):
         create_saves_directory()
         print("В процессе, подождите...")
 
-        download_command = [yt_dlp_path, '-o', 'saves/%(title)s.%(ext)s', url]
-        with tqdm(total=100, desc="Скачивание MP4", unit="%", leave=False) as pbar:
-            process = subprocess.Popen(download_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-            for line in iter(process.stdout.readline, ''):
-                pbar.update(100 / len(line))
-            process.wait()
+        download_command = ['yt-dlp', '-o', 'saves/%(title)s.%(ext)s', url]
+        process = subprocess.Popen(download_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        process.wait()
 
         downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
 
@@ -98,7 +95,7 @@ def download_video(url):
         print(f"Файл сохранен как: saves/{downloaded_file}.mp4")
 
         input("\nНажмите Enter для продолжения...")
-        os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
+        os.system('clear' if os.name == 'posix' else 'cls')
 
     except subprocess.CalledProcessError as e:
         print(f"Ошибка при выполнении команды: {e}")
