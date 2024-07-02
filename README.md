@@ -11,4 +11,7 @@
 
 Скриншоты программы🦉
 
+![tWuOHslVGZ](https://github.com/spbkit1337/python-converter/assets/51737588/d258a59e-4801-47d9-b337-45dd757fcae3)
+
+
 
