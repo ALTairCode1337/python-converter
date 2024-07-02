@@ -52,75 +52,72 @@ def create_saves_directory():
 
 
 # Загрузка в формате MP3
-def download_mp3(url):
-    try:
-        create_saves_directory()
-        print("В процессе, подождите...")
+# def download_mp3(url):
+#     try:
+#         create_saves_directory()
+#         print("В процессе, подождите...")
 
-        download_command = [yt_dlp_path, '-o', 'saves/%(title)s.%(ext)s', '--extract-audio', '--audio-format', 'mp3', url]
-        with tqdm(total=100, desc="Скачивание MP3", unit="%", leave=False) as pbar:
-            process = subprocess.Popen(download_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-            for line in iter(process.stdout.readline, ''):
-                pbar.update(100 / len(line))
-            process.wait()
+#         download_command = [yt_dlp_path, '-o', 'saves/%(title)s.%(ext)s', '--extract-audio', '--audio-format', 'mp3', url]
+#         process = subprocess.Popen(download_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+#         process.wait()
 
-        downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
+#         downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
 
-        print("\n----------------------------------------")
-        print("               Загружено                ")
-        print("----------------------------------------")
-        print(f"Файл сохранен как: saves/{downloaded_file}.mp3")
+#         print("\n----------------------------------------")
+#         print("               Загружено                ")
+#         print("----------------------------------------")
+#         print(f"Файл сохранен как: saves/{downloaded_file}.mp3")
 
-        input("\nНажмите Enter для продолжения...")
-        os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
+#         input("\nНажмите Enter для продолжения...")
+#         os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
 
-    except subprocess.CalledProcessError as e:
-        print(f"Ошибка при выполнении команды: {e}")
+#     except subprocess.CalledProcessError as e:
+#         print(f"Ошибка при выполнении команды: {e}")
 
 # Загрузка видео в формате MP4
-def download_video(url):
-    try:
-        create_saves_directory()
-        print("В процессе, подождите...")
+# def download_video(url):
+#     try:
+#         create_saves_directory()
+#         print("В процессе, подождите...")
 
-        download_command = ['yt-dlp', '-o', 'saves/%(title)s.%(ext)s', url]
-        process = subprocess.Popen(download_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        process.wait()
+#         download_command = ['yt-dlp', '-o', 'saves/%(title)s.%(ext)s', url]
+#         process = subprocess.Popen(download_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+#         process.wait()
 
-        downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
+#         downloaded_file = os.path.basename(url).replace('.+(?:v|e)=', '').replace('\\?.*', '')
 
-        print("\n----------------------------------------")
-        print("               Загружено                ")
-        print("----------------------------------------")
-        print(f"Файл сохранен как: saves/{downloaded_file}.mp4")
+#         print("\n----------------------------------------")
+#         print("               Загружено                ")
+#         print("----------------------------------------")
+#         print(f"Файл сохранен как: saves/{downloaded_file}.mp4")
 
-        input("\nНажмите Enter для продолжения...")
-        os.system('clear' if os.name == 'posix' else 'cls')
+#         input("\nНажмите Enter для продолжения...")
+#         os.system('clear' if os.name == 'posix' else 'cls')
 
-    except subprocess.CalledProcessError as e:
-        print(f"Ошибка при выполнении команды: {e}")
+#     except subprocess.CalledProcessError as e:
+#         print(f"Ошибка при выполнении команды: {e}")
 
 # Загрузка видео m3u8
-def download_m3u8():
-    url = input("Введите ссылку на видео формата m3u8: ")
-    saves_directory = "saves"
-    if not os.path.exists(saves_directory):
-        os.makedirs(saves_directory)
+# def download_m3u8():
+#     url = input("Введите ссылку на видео формата m3u8: ")
+#     saves_directory = "saves"
+#     if not os.path.exists(saves_directory):
+#         os.makedirs(saves_directory)
     
-    print(f"{Color.YELLOW}Скачивание в процессе...{Color.END}")
+#     print(f"{Color.YELLOW}Скачивание в процессе...{Color.END}")
     
-    # Используем FFmpeg для скачивания и конвертации видео, скрывая вывод процесса
-    subprocess.call(['ffmpeg', '-i', url, os.path.join(saves_directory, 'video.mp4')], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+#     # Используем FFmpeg для скачивания и конвертации видео, скрывая вывод процесса
+#     subprocess.call(['ffmpeg', '-i', url, os.path.join(saves_directory, 'video.mp4')], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     
-    downloaded_file = 'video.mp4'
+#     downloaded_file = 'video.mp4'
     
-    print(f"\n{Color.GREEN}----------------------------------------{Color.END}")
-    print(f"{Color.GREEN}               Загружено                {Color.END}")
-    print(f"{Color.GREEN}----------------------------------------{Color.END}")
-    print(f"{Color.GREEN}Файл сохранен как: saves/{downloaded_file}{Color.END}")
+#     print(f"\n{Color.GREEN}----------------------------------------{Color.END}")
+#     print(f"{Color.GREEN}               Загружено                {Color.END}")
+#     print(f"{Color.GREEN}----------------------------------------{Color.END}")
+#     print(f"{Color.GREEN}Файл сохранен как: saves/{downloaded_file}{Color.END}")
     
-    input("Нажмите Enter для продолжения...")
-    os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
+#     input("Нажмите Enter для продолжения...")
+#     os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
 
 
 
@@ -248,7 +245,7 @@ def compress_videos():
 
 
 
-from tqdm import tqdm
+
 
 # Сжатие картинок в webp
 def convert_to_webp(parent_dir, quality):
@@ -304,38 +301,38 @@ def main_menu():
         print("Версия программы 0.4")
         print("Автор: https://github.com/spbkit1337")
         print("\n")
-        print("1) Загрузить в формате MP3")
-        print("2) Загрузить видео в формате MP4")
-        print("3) Сконвертировать и сжать видео")
-        print("4) Скачать m3u8")
-        print("5) Сконвертировать и сжать изображения")
-        print("6) Поддерживаемые источники (?)")
-        print("7) Выход")
+        # print("1) Загрузить в формате MP3")
+        # print("2) Загрузить видео в формате MP4")
+        print("1) Сконвертировать и сжать видео")
+        # print("4) Скачать m3u8")
+        print("2) Сконвертировать и сжать изображения")
+        print("3) Поддерживаемые источники (?)")
+        print("4) Выход")
 
         choice = input("Введите ваш выбор (1/2/3/4/5/6/7): ")
 
+        # if choice == '1':
+        #     url = input("Введите ссылку на видео чтобы скачать аудио: ")
+        #     add_link(url)
+        #     download_mp3(url)
+        # elif choice == '2':
+        #     url = input("Введите ссылку на видео: ")
+        #     add_link(url)
+        #     download_video(url)
         if choice == '1':
-            url = input("Введите ссылку на видео чтобы скачать аудио: ")
-            add_link(url)
-            download_mp3(url)
-        elif choice == '2':
-            url = input("Введите ссылку на видео: ")
-            add_link(url)
-            download_video(url)
-        elif choice == '3':
             compress_videos()
-        elif choice == '4':
-            download_m3u8()
-        elif choice == '5':
+        # elif choice == '4':
+        #     download_m3u8()
+        elif choice == '2':
             print("\n")
-            print("Все файлы: '.jpeg', '.jpg', '.avif', '.png', '.webp', '.tiff' будут сконвертированы и сжаты в webp и сохранены рядом с исходными файлами (будет добавлен суффикс _compressed)")
+            print("Все файлы: '.jpeg', '.jpg', '.avif', '.png', '.webp', '.tiff' будут сконвертированы и сжаты в webp и сохранены рядом с исходными файлами (будет добавлен суффикс _compressed). Также будет предложено после сжатия удалить исходные фотки")
             print("\nДругие файлы кроме фоток затронуты не будут.")
             parent_dir = input("Шаг: 1(2)Введи путь до общей папки: ")
             quality = int(input("Шаг: 2(2)Степень сжатия от 1 до 100 (рекомендую ставить 60-75): "))
             convert_to_webp(parent_dir, quality)            
-        elif choice == '6':
+        elif choice == '3':
             webbrowser.open("https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md")
-        elif choice == '7':
+        elif choice == '4':
             exit()
         else:
             print("Неверный выбор, попробуйте снова.")
