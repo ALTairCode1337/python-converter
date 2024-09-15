@@ -37,7 +37,8 @@ sudo apt install python3-tqdm
 
 Скриншоты программы🦉
 
-![tWuOHslVGZ](https://github.com/spbkit1337/python-converter/assets/51737588/d258a59e-4801-47d9-b337-45dd757fcae3)
+![344938282-d258a59e-4801-47d9-b337-45dd757fcae3](https://github.com/user-attachments/assets/7fd377d4-effb-407e-893c-21c0e47ebb2b)
+
 
 
 
