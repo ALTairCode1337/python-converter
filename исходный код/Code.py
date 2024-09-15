@@ -299,7 +299,6 @@ def main_menu():
     while True:
         os.system('clear' if platform.system() == 'Darwin' or platform.system() == 'Linux' else 'cls')
         print("Версия программы 0.4")
-        print("Автор: https://github.com/spbkit1337")
         print("\n")
         # print("1) Загрузить в формате MP3")
         # print("2) Загрузить видео в формате MP4")
